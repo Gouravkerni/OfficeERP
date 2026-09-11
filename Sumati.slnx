@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Sumati.API/Sumati.API.csproj" />
+  <Project Path="Sumati.Application/Sumati.Application.csproj" Id="6443797b-434c-45cb-867d-e78b52da7a60" />
+  <Project Path="Sumati.Domain/Sumati.Domain.csproj" Id="b8b39e6f-11f9-47c5-bdd3-4efaff32d0ed" />
+  <Project Path="Sumati.Infrastructure/Sumati.Infrastructure.csproj" Id="5f16447b-65ff-48c8-826e-c4fa55729d8e" />
+</Solution>
