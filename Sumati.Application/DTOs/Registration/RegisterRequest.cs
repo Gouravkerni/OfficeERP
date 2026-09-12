@@ -20,11 +20,11 @@ public class RegisterRequest
 
     public string LastName { get; set; } = string.Empty;
 
-    public string Phone { get; set; } = string.Empty;
+    public long Phone { get; set; }
 
-    public int DesignationId { get; set; }
+    public string Designation { get; set; } = string.Empty;
 
-    public int EmploymentTypeId { get; set; }
+    public string EmploymentType { get; set; } = string.Empty;
 
     public DateTime DateOfJoining { get; set; }
 }

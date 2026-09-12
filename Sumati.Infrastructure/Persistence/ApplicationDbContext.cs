@@ -13,10 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     }
     public DbSet<Employee> Employees { get; set; }
-
-    public DbSet<EmploymentType> EmploymentTypes { get; set; }
-
-    public DbSet<Designation> Designations { get; set; }
+    public DbSet<Attendance> Attendances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -35,5 +32,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     .WithOne()
     .HasForeignKey<Employee>(employee => employee.UserId)
     .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Attendance>()
+    .HasOne<Employee>()
+    .WithMany()
+    .HasForeignKey(attendance => attendance.EmployeeId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Attendance>()
+    .HasIndex(attendance => new
+    {
+        attendance.EmployeeId,
+        attendance.AttendanceDate
+    })
+    .IsUnique();
     }
 }

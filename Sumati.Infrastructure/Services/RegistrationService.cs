@@ -24,7 +24,26 @@ public class RegistrationService : IRegistrationService
 
     public async Task RegisterAdminAsync(RegisterRequest request)
     {
-        await CreateUserAsync(request, Roles.Admin);
+        var user = await CreateUserAsync(request, Roles.Admin);
+
+        var employee = new Employee
+        {
+            UserId = user.Id,
+            EmployeeCode = $"EMP-{Guid.NewGuid():N}".ToUpper(),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Phone = request.Phone,
+            Designation = request.Designation,
+            EmploymentType = request.EmploymentType,
+            DateOfJoining = request.DateOfJoining,
+            EmploymentStatus = EmploymentStatus.Active,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _dbContext.Employees.Add(employee);
+
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task RegisterEmployeeAsync(RegisterRequest request)
@@ -38,8 +57,8 @@ public class RegistrationService : IRegistrationService
             FirstName = request.FirstName,
             LastName = request.LastName,
             Phone = request.Phone,
-            DesignationId = request.DesignationId,
-            EmploymentTypeId = request.EmploymentTypeId,
+            Designation = request.Designation,
+            EmploymentType = request.EmploymentType,
             DateOfJoining = request.DateOfJoining,
             EmploymentStatus = EmploymentStatus.Active,
             CreatedAt = DateTime.UtcNow,

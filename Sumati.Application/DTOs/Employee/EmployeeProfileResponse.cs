@@ -1,13 +1,9 @@
-﻿namespace Sumati.Domain.Entities;
+﻿namespace Sumati.Application.DTOs.Employee;
 
-using Sumati.Domain.Enums;
-
-public class Employee
+public class EmployeeProfileResponse
 {
     public int Id { get; set; }
 
-    public string UserId { get; set; } = string.Empty;
-  
     public string EmployeeCode { get; set; } = string.Empty;
 
     public string FirstName { get; set; } = string.Empty;
@@ -22,15 +18,11 @@ public class Employee
 
     public DateTime DateOfJoining { get; set; }
 
-    public EmploymentStatus EmploymentStatus { get; set; }
+    public string EmploymentStatus { get; set; } = string.Empty;
 
     public string? ProfileImageUrl { get; set; }
 
     public string? Address { get; set; }
 
     public string? EmergencyContact { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime UpdatedAt { get; set; }
 }
