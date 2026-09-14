@@ -31,7 +31,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     .HasOne<ApplicationUser>()
     .WithOne()
     .HasForeignKey<Employee>(employee => employee.UserId)
-    .OnDelete(DeleteBehavior.Cascade);
+    .OnDelete(DeleteBehavior.Cascade); 
 
         builder.Entity<Attendance>()
     .HasOne<Employee>()
