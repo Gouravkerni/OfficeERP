@@ -149,4 +149,120 @@ public class AttendanceService : IAttendanceService
 
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<List<MyAttendanceResponse>> GetMyAttendanceAsync(string userId)
+    {
+        var employee = await _dbContext.Employees
+            .FirstOrDefaultAsync(e => e.UserId == userId);
+
+        if (employee is null)
+        {
+            throw new KeyNotFoundException("Employee profile not found.");
+        }
+
+        var attendance = await _dbContext.Attendances
+            .Where(a => a.EmployeeId == employee.Id)
+            .OrderByDescending(a => a.AttendanceDate)
+            .Select(a => new MyAttendanceResponse
+            {
+                AttendanceId = a.Id,
+                AttendanceDate = a.AttendanceDate,
+                CheckInTime = a.CheckInTime,
+                CheckOutTime = a.CheckOutTime,
+                Status = a.Status.ToString()
+            })
+            .ToListAsync();
+
+        return attendance;
+    }
+
+    public async Task<List<EmployeeAttendanceResponse>> GetAllAttendanceAsync()
+    {
+        var attendance = await _dbContext.Attendances
+            .Join(
+                _dbContext.Employees,
+                attendance => attendance.EmployeeId,
+                employee => employee.Id,
+                (attendance, employee) => new EmployeeAttendanceResponse
+                {
+                    EmployeeId = employee.Id,
+                    EmployeeCode = employee.EmployeeCode,
+                    EmployeeName = employee.FirstName + " " + employee.LastName,
+                    AttendanceDate = attendance.AttendanceDate,
+                    CheckInTime = attendance.CheckInTime,
+                    CheckOutTime = attendance.CheckOutTime,
+                    Status = attendance.Status.ToString()
+                })
+            .OrderByDescending(a => a.AttendanceDate)
+            .ThenBy(a => a.EmployeeCode)
+            .ToListAsync();
+
+        return attendance;
+    }
+
+    public async Task<MonthlyAttendanceSummaryResponse> GetMonthlyAttendanceSummaryAsync(
+    int year,
+    int month)
+    {
+        var attendance = await _dbContext.Attendances
+            .Where(a =>
+                a.AttendanceDate.Year == year &&
+                a.AttendanceDate.Month == month)
+            .ToListAsync();
+
+        return new MonthlyAttendanceSummaryResponse
+        {
+            Year = year,
+            Month = month,
+            Present = attendance.Count(a => a.Status == AttendanceStatus.Present),
+            Absent = attendance.Count(a => a.Status == AttendanceStatus.Absent),
+            Leave = attendance.Count(a => a.Status == AttendanceStatus.Leave),
+            Holiday = attendance.Count(a => a.Status == AttendanceStatus.Holiday),
+            Incomplete = attendance.Count(a => a.Status == AttendanceStatus.Incomplete)
+        };
+    }
+
+    public async Task<List<EmployeeMonthlyAttendanceSummaryResponse>>
+    GetEmployeeMonthlyAttendanceSummaryAsync(int year, int month)
+    {
+        var attendance = await _dbContext.Attendances
+            .Where(a =>
+                a.AttendanceDate.Year == year &&
+                a.AttendanceDate.Month == month)
+            .ToListAsync();
+
+        var employees = await _dbContext.Employees
+            .ToListAsync();
+
+        var result = employees.Select(employee =>
+        {
+            var employeeAttendance = attendance
+                .Where(a => a.EmployeeId == employee.Id)
+                .ToList();
+
+            return new EmployeeMonthlyAttendanceSummaryResponse
+            {
+                EmployeeId = employee.Id,
+                EmployeeCode = employee.EmployeeCode,
+                EmployeeName = employee.FirstName + " " + employee.LastName,
+
+                Present = employeeAttendance.Count(
+                    a => a.Status == AttendanceStatus.Present),
+
+                Absent = employeeAttendance.Count(
+                    a => a.Status == AttendanceStatus.Absent),
+
+                Leave = employeeAttendance.Count(
+                    a => a.Status == AttendanceStatus.Leave),
+
+                Holiday = employeeAttendance.Count(
+                    a => a.Status == AttendanceStatus.Holiday),
+
+                Incomplete = employeeAttendance.Count(
+                    a => a.Status == AttendanceStatus.Incomplete)
+            };
+        }).ToList();
+
+        return result;
+    }
 }

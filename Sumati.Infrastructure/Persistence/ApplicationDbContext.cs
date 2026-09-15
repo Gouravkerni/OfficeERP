@@ -14,6 +14,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Attendance> Attendances { get; set; }
+    public DbSet<LeaveRequest> LeaveRequests { get; set; }
+    public DbSet<LeaveType> LeaveTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
