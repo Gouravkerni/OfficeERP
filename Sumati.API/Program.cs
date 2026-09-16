@@ -79,6 +79,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<SuperAdminProvisioner>();
+builder.Services.AddScoped<ILeaveService, LeaveService>();
 
 builder.Services.AddControllers();
 
