@@ -10,4 +10,11 @@ public interface ILeaveService
 
     Task<List<LeaveRequestResponse>> GetMyLeaveRequestsAsync(
         string userId);
+
+    Task UpdateLeaveRequestStatusAsync(
+    int leaveRequestId,
+    string adminUserId,
+    UpdateLeaveRequestStatusRequest request);
+
+    Task<List<AdminLeaveRequestResponse>> GetAllLeaveRequestsAsync();
 }
